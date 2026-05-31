@@ -4,6 +4,7 @@ const COPY_STATUS_PATTERN = /Copied|Clipboard unavailable/;
 const COLEMAK_POOL =
 	"qwahzxcvbmQWAHZXCVBM1234567890`~!@#$%^&*()-_=+[{]}\\|'\",<.>/?";
 const DISALLOWED_COLEMAK_LETTERS = /[defgijklnoprstuyDEFGIJKLNOPRSTUY]/;
+const WORD_BOUNDARY_PATTERN = /[a-z][A-Z]/;
 const REQUESTED_PASSWORD_LENGTH = 20;
 
 test("limits Colemak output to same-position QWERTY keys", async ({ page }) => {
@@ -26,6 +27,7 @@ test("limits Colemak output to same-position QWERTY keys", async ({ page }) => {
 	expect(
 		Array.from(password).every((character) => pool.includes(character)),
 	).toBe(true);
+	expect(password).toMatch(WORD_BOUNDARY_PATTERN);
 	expect(password).not.toMatch(DISALLOWED_COLEMAK_LETTERS);
 });
 
@@ -62,6 +64,7 @@ test("generates a layout-aware password and copy feedback", async ({
 	expect(
 		Array.from(password).every((character) => pool.includes(character)),
 	).toBe(true);
+	expect(password).toMatch(WORD_BOUNDARY_PATTERN);
 
 	await page.getByRole("button", { name: "Copy" }).click();
 	await expect(page.getByTestId("copy-status")).toContainText(

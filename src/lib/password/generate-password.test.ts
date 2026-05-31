@@ -15,6 +15,7 @@ import type { RandomSource } from "./random-source";
 import { PASSWORD_WORD_CANDIDATES } from "./word-candidates";
 
 const DISALLOWED_COLEMAK_LETTERS = /[defgijklnoprstuyDEFGIJKLNOPRSTUY]/;
+const WORD_BOUNDARY_PATTERN = /[a-z][A-Z]/;
 
 function createSequenceSource(seed = 0): RandomSource {
 	let value = seed;
@@ -85,6 +86,8 @@ describe("generateMemorablePassword", () => {
 
 		expect(password).toHaveLength(DEFAULT_PASSWORD_LENGTH);
 		expect(words.join("")).toHaveLength(DEFAULT_PASSWORD_LENGTH);
+		expect(password.toLowerCase()).toBe(words.join(""));
+		expect(password).toMatch(WORD_BOUNDARY_PATTERN);
 		expect(words.every((word) => candidateValues.has(word))).toBe(true);
 		expect(
 			words.every((word) =>
@@ -165,18 +168,22 @@ describe("generateMemorablePassword", () => {
 		}
 	});
 
-	it("keeps supported uppercase, digit, and symbol variety for complete-word output", () => {
+	it("uses uppercase word boundaries when uppercase letters are allowed", () => {
 		const pool =
 			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!$";
+		const words = selectCompleteWords({
+			length: DEFAULT_PASSWORD_LENGTH,
+			pool,
+			randomSource: createSequenceSource(),
+		});
 		const password = generateMemorablePassword({
 			length: DEFAULT_PASSWORD_LENGTH,
 			pool,
 			randomSource: createSequenceSource(),
 		});
 
+		expect(password.toLowerCase()).toBe(words.join(""));
 		expect(Array.from(password).some(isUppercaseAsciiLetter)).toBe(true);
-		expect(Array.from(password).some(isAsciiDigit)).toBe(true);
-		expect(Array.from(password).some(isNonAlphanumericAscii)).toBe(true);
 	});
 
 	it("fails closed for empty pools and out-of-range lengths", () => {
@@ -200,16 +207,4 @@ describe("generateMemorablePassword", () => {
 
 function isUppercaseAsciiLetter(character: string): boolean {
 	return character >= "A" && character <= "Z";
-}
-
-function isAsciiDigit(character: string): boolean {
-	return character >= "0" && character <= "9";
-}
-
-function isNonAlphanumericAscii(character: string): boolean {
-	return (
-		!isUppercaseAsciiLetter(character) &&
-		!(character >= "a" && character <= "z") &&
-		!isAsciiDigit(character)
-	);
 }

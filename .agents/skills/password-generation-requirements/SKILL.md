@@ -43,6 +43,8 @@ Memorability depends on complete word chunks when the restricted pool can suppor
 - MUST NOT truncate words, append single-character filler, or otherwise create incomplete word chunks to satisfy length.
 - MUST keep every selectable first-party layout on complete-word generation for every supported length; add reviewed word-list supplements instead of allowing normal app flows to degrade to random characters.
 - MUST fall back to unbiased random character selection from the same final pool when no complete-word sequence can fit the requested length and same-position pool.
+- MUST preserve visible word-boundary cues, such as uppercase boundaries, when complete-word output has multiple words and uppercase letters are allowed.
+- MUST NOT force digit or symbol substitutions when they make restricted-layout output look random instead of word-like.
 - MUST use a bounded feasibility check or backtracking strategy when selecting words so generation can recover from dead-end word choices.
 - SHOULD source initial English candidates from the reviewed `wordlist-js` common-English lists and filter them through the final character pool before selection.
 - SHOULD use lower-frequency `wordlist-js` supplements when strict same-position pools need extra short English words to remain memorable.
