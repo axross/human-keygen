@@ -15,6 +15,19 @@ import type { RandomSource } from "./random-source";
 import { PASSWORD_WORD_CANDIDATES } from "./word-candidates";
 
 const DISALLOWED_COLEMAK_LETTERS = /[defgijklnoprstuyDEFGIJKLNOPRSTUY]/;
+const REJECTED_COLEMAK_WORDS = new Set([
+	"aah",
+	"aha",
+	"baa",
+	"bah",
+	"cam",
+	"caw",
+	"haw",
+	"hmm",
+	"mac",
+	"vac",
+]);
+const FORMATTED_WORD_BOUNDARY_PATTERN = /(?=[A-Z])/;
 const WORD_BOUNDARY_PATTERN = /[a-z][A-Z]/;
 
 function createSequenceSource(seed = 0): RandomSource {
@@ -83,12 +96,15 @@ describe("generateMemorablePassword", () => {
 			pool: pool?.characters ?? "",
 			randomSource: createSequenceSource(7),
 		});
+		const formattedWords = splitFormattedWords(password);
 
 		expect(password).toHaveLength(DEFAULT_PASSWORD_LENGTH);
 		expect(words.join("")).toHaveLength(DEFAULT_PASSWORD_LENGTH);
+		expect(formattedWords).toEqual(words);
 		expect(password.toLowerCase()).toBe(words.join(""));
 		expect(password).toMatch(WORD_BOUNDARY_PATTERN);
 		expect(words.every((word) => candidateValues.has(word))).toBe(true);
+		expect(words.every((word) => !REJECTED_COLEMAK_WORDS.has(word))).toBe(true);
 		expect(
 			words.every((word) =>
 				Array.from(word).every((character) =>
@@ -122,6 +138,16 @@ describe("generateMemorablePassword", () => {
 					true,
 				);
 			}
+		}
+	});
+
+	it("excludes rejected Colemak supplemental chunks", () => {
+		const candidateValues = new Set(
+			PASSWORD_WORD_CANDIDATES.map((candidate) => candidate.value),
+		);
+
+		for (const word of REJECTED_COLEMAK_WORDS) {
+			expect(candidateValues.has(word)).toBe(false);
 		}
 	});
 
@@ -207,4 +233,10 @@ describe("generateMemorablePassword", () => {
 
 function isUppercaseAsciiLetter(character: string): boolean {
 	return character >= "A" && character <= "Z";
+}
+
+function splitFormattedWords(password: string): string[] {
+	return password
+		.split(FORMATTED_WORD_BOUNDARY_PATTERN)
+		.map((word) => word.toLowerCase());
 }

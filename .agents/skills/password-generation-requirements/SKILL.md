@@ -46,6 +46,7 @@ Memorability depends on complete word chunks when the restricted pool can suppor
 - MUST preserve visible word-boundary cues, such as uppercase boundaries, when complete-word output has multiple words and uppercase letters are allowed.
 - MUST NOT force digit or symbol substitutions when they make restricted-layout output look random instead of word-like.
 - MUST use a bounded feasibility check or backtracking strategy when selecting words so generation can recover from dead-end word choices.
+- MUST reject abbreviation-like, sound-only, or non-word supplemental chunks even when they appear in `wordlist-js`; examples include `vac`, `cam`, and `bah`.
 - SHOULD source initial English candidates from the reviewed `wordlist-js` common-English lists and filter them through the final character pool before selection.
 - SHOULD use lower-frequency `wordlist-js` supplements when strict same-position pools need extra short English words to remain memorable.
 - SHOULD keep word-list imports narrow enough to avoid pulling unnecessary dialect or frequency data into the client bundle.

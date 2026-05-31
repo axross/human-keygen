@@ -83,7 +83,7 @@ The primary user has a non-QWERTY layout and wants a password that is both stron
 - When no complete-word sequence can fit the restricted character pool, generation MUST fall back to unbiased random character selection from the same final pool.
 - The generator MUST NOT truncate a word or append filler characters to satisfy length.
 - Complete-word output MUST preserve visible word-boundary cues when uppercase letters are available.
-- The initial English word candidates SHOULD come from the MIT-licensed `wordlist-js` SCOWL-based common-English lists, filtered to lowercase ASCII words that can be typed from the computed pool; lower-frequency `wordlist-js` supplements MAY be included when a strict same-position pool cannot form memorable phrases from the primary list alone.
+- The initial English word candidates SHOULD come from the MIT-licensed `wordlist-js` SCOWL-based common-English lists, filtered to lowercase ASCII words that can be typed from the computed pool; lower-frequency `wordlist-js` supplements MAY be included when a strict same-position pool cannot form memorable phrases from the primary list alone, but abbreviation-like or non-word chunks MUST be excluded.
 - Future generator variants MAY use gamer-username-like substitutions such as `4` for `A`, `5` for `S`, `!` for `I`, or `8` for `eight` / `ate` when those replacement characters are allowed by the computed pool and the result remains visibly word-like.
 - Tests MUST be able to inject deterministic randomness without weakening production randomness.
 

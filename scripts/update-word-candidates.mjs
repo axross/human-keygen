@@ -9,21 +9,12 @@ const MIN_SUPPLEMENTAL_WORD_LENGTH = 3;
 const MAX_WORD_LENGTH = 9;
 const LOWERCASE_WORD_PATTERN = /^[a-z]+$/;
 const SUPPLEMENTAL_WORD_VALUES = [
-	"aah",
-	"aha",
-	"baa",
-	"bah",
 	"cab",
-	"cam",
-	"caw",
 	"gag",
 	"gaga",
 	"gags",
 	"gas",
 	"ham",
-	"haw",
-	"hmm",
-	"mac",
 	"macaw",
 	"mam",
 	"mama",
@@ -36,7 +27,6 @@ const SUPPLEMENTAL_WORD_VALUES = [
 	"sags",
 	"sass",
 	"sax",
-	"vac",
 	"wax",
 	"wham",
 ];
