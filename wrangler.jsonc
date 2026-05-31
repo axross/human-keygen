@@ -1,0 +1,15 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "human-keygen",
+	"compatibility_date": "2026-05-30",
+	"compatibility_flags": ["nodejs_compat"],
+	"send_metrics": false,
+	"assets": {
+		"directory": "./dist/client",
+		"html_handling": "auto-trailing-slash",
+		"not_found_handling": "single-page-application"
+	},
+	"build": {
+		"command": "npm ci && npm run build"
+	}
+}
