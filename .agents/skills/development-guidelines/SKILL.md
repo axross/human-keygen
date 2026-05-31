@@ -1,6 +1,6 @@
 ---
 name: development-guidelines
-description: Apply this skill at the start of EVERY task in this project. Covers workflow classification, scoped change management, Biome format/lint expectations, npm scripts, TanStack Start/Tailwind/Playwright/Biome/Web Crypto current-doc checks, dependency and generated-file rules, verification requirements, and topic-skill routing for Human Keygen.
+description: Apply this skill at the start of EVERY task in this project. Covers workflow classification, scoped change management, Biome format/lint expectations, npm scripts, Conventional Commits, pull request titles for squash merge, TanStack Start/Tailwind/Playwright/Biome/Web Crypto current-doc checks, dependency and generated-file rules, verification requirements, and topic-skill routing for Human Keygen.
 ---
 
 # Development Guidelines
@@ -58,6 +58,22 @@ See [dev-commands.md](./dev-commands.md) for the repository's npm scripts and wh
 **Guidelines:**
 
 - SHOULD read the linked reference before running or modifying project commands, local servers, tests, builds, or deployment checks.
+
+## Commit Messages
+
+See [commit-messages.md](./commit-messages.md) for the Conventional Commits v1.0.0 rules required for every commit message in this repository.
+
+**Guidelines:**
+
+- SHOULD read the linked reference before creating, amending, reviewing, or suggesting commit messages.
+
+## Pull Requests
+
+See [pull-requests.md](./pull-requests.md) for branch, draft PR, PR body, and squash-merge title rules.
+
+**Guidelines:**
+
+- SHOULD read the linked reference before opening, updating, reviewing, or marking pull requests ready.
 
 ## Verification
 

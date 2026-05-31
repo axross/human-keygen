@@ -1,6 +1,6 @@
 ---
 name: code-review-guideline
-description: Apply this skill at the start of EVERY review task, including post-implementation self-review. Covers reviewer-mode reset, diff scoping with `git status`/`git diff`, severity labels, file-line evidence, fix snippets, verification evidence, second-pass re-review after fixes, high-risk escalation, and topic-specific lenses for password generation, keyboard layouts, privacy, dependencies, routing, UI, observability, and e2e tests.
+description: Apply this skill at the start of EVERY review task, including post-implementation self-review. Covers reviewer-mode reset, diff scoping with `git status`/`git diff`, severity labels, file-line evidence, fix snippets, Conventional Commit and PR-title checks, verification evidence, second-pass re-review after fixes, high-risk escalation, and topic-specific lenses for password generation, keyboard layouts, privacy, dependencies, routing, UI, observability, and e2e tests.
 ---
 
 # Code Review Guideline
@@ -52,6 +52,17 @@ See [escalation.md](./escalation.md) for high-risk change handling, guideline-ga
 **Guidelines:**
 
 - SHOULD read the linked reference when a change affects generated password secrecy, randomness, telemetry, dependencies, production/deployment config, or large refactors.
+
+## Commit and PR Title Checks
+
+Commit messages and pull request titles are part of the review surface because squash and merge uses the PR title as the final commit message.
+
+**Guidelines:**
+
+- MUST verify commit messages follow [Development Guidelines › Commit Messages](../development-guidelines/commit-messages.md) when reviewing local commit history or commit-ready work.
+- MUST verify pull request titles follow [Development Guidelines › Pull Requests](../development-guidelines/pull-requests.md) when reviewing a PR.
+- MUST treat a non-conforming squash-merge PR title as a blocking review finding.
+- SHOULD recommend the smallest corrected Conventional Commit header when title or commit wording is wrong.
 
 ## Topic-Specific Lenses
 
