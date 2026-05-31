@@ -1,41 +1,40 @@
 ---
 name: maintainable-code-guidelines
-description: Use this skill when reviewing readability, naming, abstraction boundaries, complexity, dead code, or scope discipline. Covers pure password and layout modules, small React components, dependency restraint, clear naming, avoiding premature abstractions, and keeping product rules testable.
+description: Use this skill when reviewing readability, naming, abstraction boundaries, complexity, dead code, or scope discipline. Covers pure password and layout modules, small React components, dependency restraint, clear naming, Biome complexity signals, avoiding premature abstractions, and keeping product rules testable.
 ---
 
 # Maintainable Code Guidelines
 
-Apply this skill when judging whether code is understandable, well-scoped, and easy to change safely.
+Apply this skill when judging whether code is understandable, well-scoped, and easy to change safely. This is the reviewer lens; developer-facing mechanics live in the topic skills.
 
 ## Scope Discipline
 
-Human Keygen should stay small enough that its security-sensitive behavior is easy to audit.
+See [scope-discipline.md](./scope-discipline.md) for keeping changes narrow, separating refactors from behavior changes, and avoiding drive-by cleanup.
 
 **Guidelines:**
 
-- MUST keep changes limited to the requested behavior.
-- MUST NOT combine broad refactors with product changes unless the refactor is required.
-- MUST remove dead code introduced by the change.
-- SHOULD split large changes into pure logic, UI, and verification steps.
+- SHOULD read the linked reference when reviewing change scope, unrelated diffs, or refactor boundaries.
 
 ## Naming and Boundaries
 
-Names should reveal whether code is product logic, layout data, or UI composition.
+See [naming-and-boundaries.md](./naming-and-boundaries.md) for names and module boundaries that distinguish layout data, password generation, browser APIs, and UI composition.
 
 **Guidelines:**
 
-- MUST use names that distinguish layout definitions, character pools, generated password values, and entropy estimates.
-- MUST keep pure functions free of React and browser-only side effects.
-- MUST keep browser APIs such as Web Crypto and Clipboard behind small explicit boundaries.
-- SHOULD avoid abbreviations in security-sensitive code.
+- SHOULD read the linked reference when reviewing file placement, identifiers, imports, or pure-vs-browser boundaries.
+
+## Complexity and Readability
+
+See [complexity-and-readability.md](./complexity-and-readability.md) for Biome complexity signals, magic values, testability, and dead-code expectations.
+
+**Guidelines:**
+
+- SHOULD read the linked reference when reviewing dense functions, nested logic, word-selection algorithms, or lint suppressions.
 
 ## Abstraction
 
-Abstractions should earn their keep by reducing real complexity.
+See [abstraction.md](./abstraction.md) for when to introduce shared components, helpers, or framework-like layers.
 
 **Guidelines:**
 
-- MUST NOT add framework, state-management, or utility abstractions before the app needs them.
-- MUST NOT hide password-generation rules behind generic helper names.
-- SHOULD prefer direct pure functions and typed data over configurable mini-frameworks.
-- SHOULD add a shared component only after repeated UI structure becomes meaningful.
+- SHOULD read the linked reference when reviewing new abstractions, shared helpers, state-management patterns, or repeated UI structure.

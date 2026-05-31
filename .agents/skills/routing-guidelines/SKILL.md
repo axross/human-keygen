@@ -1,11 +1,11 @@
 ---
 name: routing-guidelines
-description: Use this skill when creating, moving, renaming, or reviewing TanStack Start routes, route metadata, root document shell, stylesheet links, router configuration, generated route tree behavior, or URL contracts. Covers `src/routes`, `__root.tsx`, `router.tsx`, `HeadContent`, `Scripts`, Tailwind CSS link wiring, and single-page generator routing.
+description: Use this skill when creating, moving, renaming, or reviewing TanStack Start routes, route metadata, root document shell, stylesheet links, router configuration, generated route tree behavior, static/prerender output, or URL contracts. Covers `src/routes`, `__root.tsx`, `router.tsx`, `HeadContent`, `Scripts`, Tailwind CSS link wiring, and single-page generator routing.
 ---
 
 # Routing Guidelines
 
-Apply this skill when changing URL structure, TanStack Start route files, root route metadata, or router configuration.
+Apply this skill when changing URL structure, TanStack Start route files, root route metadata, document shell, or router configuration.
 
 ## Route Ownership
 
@@ -22,23 +22,36 @@ TanStack Start uses TanStack Router file-based routing. The initial app should e
 
 ## Root Route and Document Shell
 
-The root route owns the document shell and global head output. It is the right place for viewport metadata and the global stylesheet link.
+The root route owns the document shell and global head output. It is the right place for static metadata and the global stylesheet link.
 
 **Guidelines:**
 
 - MUST render `HeadContent` inside `<head>` and `Scripts` inside `<body>` per TanStack Start requirements.
 - MUST import the Tailwind CSS file into `__root.tsx` with the `?url` query when using explicit route head stylesheet links.
-- MUST include `charset`, viewport, title, and description metadata for the app.
-- MUST NOT put generated passwords or character pools into metadata, URLs, or server-rendered logs.
-- SHOULD keep route head data static unless product requirements need dynamic metadata.
+- MUST include `charset`, viewport, title, description, and favicon metadata for the app.
+- MUST keep metadata static and free of generated passwords, character pools, layout-specific generated values, or user-specific state.
+- MUST preserve `<html lang="en">` unless language support requirements change.
+- SHOULD check current TanStack Start docs before changing document-shell behavior.
 
 ## Navigation and State
 
-The generator's primary state is local UI state. It should not become route state until there is a clear shareable-URL requirement.
+The generator's primary state is local UI state. It should not become route state until there is a clear shareable-URL requirement and privacy review.
 
 **Guidelines:**
 
 - MUST keep generated passwords out of route params and search params.
-- SHOULD keep layout and option selections in component state for the initial version.
-- MAY add URL-backed options later only if privacy impact is reviewed by [Application Security Requirements](../application-security-requirements/SKILL.md).
-- SHOULD avoid route loaders and server functions for local-only password generation.
+- MUST keep layout and option selections in component state for the initial version.
+- MUST avoid route loaders and server functions for local-only password generation.
+- MAY add URL-backed non-secret options later only if privacy impact is reviewed by [Application Security Requirements](../application-security-requirements/SKILL.md).
+- SHOULD keep new routes out of the app until they support a concrete user workflow.
+
+## Static and Deployment Behavior
+
+Routing changes can affect the static/prerendered output that Cloudflare Workers serves.
+
+**Guidelines:**
+
+- MUST run `npm run build` after route, metadata, router, or root document changes.
+- MUST preserve prerender/static compatibility unless a product requirement explicitly adds server behavior.
+- MUST consult [Performance and Reliability Requirements](../performance-and-reliability-requirements/SKILL.md) when route changes affect build output or Cloudflare deployment.
+- SHOULD browser-smoke-test `/` after route-shell changes.
