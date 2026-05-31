@@ -5,53 +5,36 @@ description: Use this skill when designing, implementing, or reviewing user-faci
 
 # UI Design Principles
 
-Apply this skill for design decisions on any user-facing surface. For component mechanics, consult [React Component Guidelines](../react-component-guidelines/SKILL.md).
+Apply this skill for design decisions on any user-facing surface. For React and Tailwind mechanics, consult [React Component Guidelines](../react-component-guidelines/SKILL.md).
 
 ## Product Posture
 
-Human Keygen is a practical generator, not a marketing landing page. The first screen should help the user create a password immediately.
+See [product-posture.md](./product-posture.md) for the app-first hierarchy and the rule that the first screen must help users generate a password immediately.
 
 **Guidelines:**
 
-- MUST make the generator the primary first-viewport experience.
-- MUST NOT replace the app with a hero-only marketing page.
-- MUST present layout selection, generation controls, generated password, and copy action as the main hierarchy.
-- SHOULD keep explanatory copy short and attached to the controls it clarifies.
-- SHOULD make the character-pool explanation scannable without crowding the generated password.
+- SHOULD read the linked reference when changing page hierarchy, first-viewport composition, explanatory copy, or navigation.
 
 ## Password Readability
 
-The generated password is the most important object on the page. It needs to be readable, copyable, and visually distinct.
+See [password-readability.md](./password-readability.md) for how generated passwords, entropy, and character-pool details should be displayed.
 
 **Guidelines:**
 
-- MUST display generated passwords in a monospace style.
-- MUST preserve enough spacing for ambiguous characters to be distinguishable.
-- MUST avoid truncating the generated password without a deliberate overflow affordance.
-- MUST keep copy feedback visible and screen-reader announced.
-- SHOULD show the selected character pool in a secondary region, not as the visual competitor to the password.
+- SHOULD read the linked reference when changing generated output, password typography, copy action placement, entropy, or pool summaries.
 
 ## Responsive and Accessible Controls
 
-The app should work for repeated use on phones and desktops.
+See [responsive-and-accessible-controls.md](./responsive-and-accessible-controls.md) for responsive layout, focus, touch target, non-color state, and semantic-control expectations.
 
 **Guidelines:**
 
-- MUST verify mobile, tablet, and desktop layouts for coherent text wrapping and non-overlap.
-- MUST provide visible `:focus-visible` treatment for every interactive control.
-- MUST use semantic controls for selects, sliders, checkboxes, buttons, and output regions.
-- MUST ensure touch targets are large enough for mobile use.
-- MUST NOT rely on color alone to communicate enabled, disabled, error, or copied states.
-- SHOULD keep control labels short and explicit.
+- SHOULD read the linked reference when changing controls, layout breakpoints, focus states, disabled/error states, or mobile behavior.
 
-## Visual Tone
+## Visual Tone and Feedback
 
-The design should feel precise, calm, and trustworthy. It should not imply storage, account management, or enterprise vault features.
+See [visual-tone-and-feedback.md](./visual-tone-and-feedback.md) for palette, density, animation, empty/error/copy states, and copy tone.
 
 **Guidelines:**
 
-- MUST use a restrained multi-hue palette with strong contrast.
-- MUST avoid one-note palettes dominated by a single hue family.
-- MUST avoid decorative elements that distract from password inspection.
-- SHOULD use compact panels and clear grouping rather than oversized editorial sections.
-- SHOULD keep animation subtle and respect reduced-motion preferences.
+- SHOULD read the linked reference when changing visual style, colors, motion, empty states, error messages, or copy feedback.

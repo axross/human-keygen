@@ -5,41 +5,28 @@ description: Use this skill when adding, editing, testing, or reviewing keyboard
 
 # Keyboard Layout Requirements
 
-Apply this skill when changing keyboard layout definitions, layout metadata, or character-category derivation.
+Apply this skill when changing keyboard layout definitions, layout metadata, QWERTY intersections, category derivation, or tests that prove generated passwords stay typeable.
 
 ## Layout Definition Shape
 
-Layout data should be boring, explicit, and reviewable. A future contributor should be able to see why a character is available at a physical key position.
+See [layout-definition-shape.md](./layout-definition-shape.md) for QWERTY ownership, physical keymap structure, direct/shifted outputs, metadata, source notes, and AltGr/dead-key boundaries.
 
 **Guidelines:**
 
-- MUST define one QWERTY reference layout.
-- MUST give each layout a stable kebab-case `id`, display label, family or locale note, physical keymap, and source note.
-- MUST represent direct and shifted physical key outputs as literal strings or arrays that can be compared position by position against QWERTY.
-- MUST NOT model a layout only as a printable character set; this loses physical position and reintroduces false compatibility.
-- MUST keep layout character order deterministic.
-- MUST NOT include dead-key composed output unless the requirement document explicitly allows it.
-- SHOULD separate direct, shifted, and AltGr-layer characters when those layers are supported.
+- SHOULD read the linked reference when adding or editing layout definitions, metadata, source notes, or physical key outputs.
 
 ## Character Categories
 
-Category filters should be derived from layout data instead of maintained as unrelated lists.
+See [character-categories.md](./character-categories.md) for deriving letters, uppercase letters, digits, symbols, and separators from the final same-position pool.
 
 **Guidelines:**
 
-- MUST derive letters, uppercase letters, digits, and symbols from the final same-position layout pool.
-- MUST keep category predicates ASCII-focused for the first version unless non-ASCII support is approved.
-- MUST verify separators are part of the final character pool before using them.
-- SHOULD expose category counts to the UI so unavailable options can be disabled or explained.
+- SHOULD read the linked reference when changing category predicates, option availability, character counts, or pool summaries.
 
 ## Adding Layouts
 
-New layouts are product behavior. Add them one at a time unless there is a reviewed source for a batch.
+See [adding-layouts.md](./adding-layouts.md) for source review, tests, labels, fixtures, and change-summary expectations for new or modified layouts.
 
 **Guidelines:**
 
-- MUST add tests for every new layout proving its same-position pool against QWERTY.
-- MUST include a source note or rationale for the character set.
-- MUST update user-facing layout labels when new layouts are added.
-- MUST NOT silently change an existing layout's character set without updating tests and release notes or change summary.
-- SHOULD prefer a small accurate starter set over a broad unverified layout catalog.
+- SHOULD read the linked reference when adding, removing, or modifying shipped keyboard layouts.

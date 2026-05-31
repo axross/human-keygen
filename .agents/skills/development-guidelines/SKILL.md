@@ -1,11 +1,11 @@
 ---
 name: development-guidelines
-description: Apply this skill at the start of EVERY task in this project. Covers TanStack Start and Tailwind current-docs checks, scoped change management, npm scripts, dependency additions, format/lint/build/test verification, TypeScript quality, generated files, and topic-skill routing for the Human Keygen password generator.
+description: Apply this skill at the start of EVERY task in this project. Covers workflow classification, scoped change management, Biome format/lint expectations, npm scripts, TanStack Start/Tailwind/Playwright/Biome/Web Crypto current-doc checks, dependency and generated-file rules, verification requirements, and topic-skill routing for Human Keygen.
 ---
 
 # Development Guidelines
 
-Apply this skill at the start of every task in this repository. This skill owns the broad development workflow; topic-specific skills own their detailed surfaces.
+Apply these rules at the start of every task in this repository. This skill owns broad workflow and command expectations; topic-specific skills own detailed product, UI, routing, security, and testing rules.
 
 ## Workflow Classification
 
@@ -27,57 +27,45 @@ Every non-trivial task should be classified before editing so the right project 
 - MUST keep implementation changes scoped to the smallest surface that satisfies the request.
 - SHOULD revise the classification when new evidence changes the affected surface.
 
-## Current Documentation Checks
+## Code Quality
 
-This project depends on fast-moving framework and tooling behavior. Use current official docs before changing surfaces that may have shifted.
-
-| Surface | Official source |
-| ------- | --------------- |
-| TanStack Start app setup, routing, CSS, server behavior | `tanstack.com/start/latest` |
-| TanStack Router file-route behavior | `tanstack.com/router/latest` |
-| Tailwind CSS v4 and Vite integration | `tailwindcss.com/docs` |
-| Playwright runner and assertions | `playwright.dev` |
-| Biome commands and config | `biomejs.dev` |
-| Web Crypto randomness | MDN or Web Platform docs |
+See [code-quality.md](./code-quality.md) for the local TypeScript, Biome, import, comment, and generated-file rules that apply to ordinary edits.
 
 **Guidelines:**
 
-- MUST check current official docs before adding or changing TanStack Start, TanStack Router, Tailwind, Playwright, Biome, or Web Crypto integration.
-- MUST prefer official docs and source examples over blog posts for framework behavior.
-- MUST note any RC-specific TanStack Start behavior in requirements, comments, or final reporting when it affects implementation risk.
-- SHOULD pin or lock dependencies after scaffolding because TanStack Start is currently RC.
+- SHOULD read the linked reference when work touches TypeScript, JSX, imports, comments, formatting, linting, or generated outputs.
 
 ## Change Management
 
-The app should remain small, local-first, and testable. Password-generation rules are product behavior, not incidental helper code.
+See [change-management.md](./change-management.md) for how to preserve local-first password-generator behavior while changing the smallest useful surface.
 
 **Guidelines:**
 
-- MUST preserve existing public behavior unless the requested change intentionally modifies it.
-- MUST keep pure password and layout logic outside route components.
-- MUST avoid adding server dependencies or runtime services unless the product requirement needs them.
-- MUST justify every new npm dependency by product value, maintenance health, and bundle impact.
-- MUST NOT hand-edit generated files such as `src/routeTree.gen.ts` unless official tooling requires it.
-- SHOULD prefer small pure functions with focused tests for generation, same-position layout pools, and entropy logic.
+- SHOULD read the linked reference when work changes dependencies, shared modules, password/layout behavior, Cloudflare deployment config, or scope boundaries.
 
-## Verification Commands
+## Current Documentation Checks
 
-Verification should match the changed surface. If scripts do not exist yet during scaffolding, report that clearly instead of pretending they passed.
-
-| Command | When required |
-| ------- | ------------- |
-| `npm run format` | After code or documentation edits once the script exists |
-| `npm run lint` | After code or documentation edits once the script exists |
-| `npm run test` | After password logic, layout data, utility, or component behavior changes |
-| `npm run test:e2e` | After UI output, browser workflow, or e2e coverage changes |
-| `npm run build` | After routing, config, dependency, TypeScript signature, or runtime behavior changes |
+See [current-docs.md](./current-docs.md) for when current official documentation must be checked before changing fast-moving framework, tooling, or browser API behavior.
 
 **Guidelines:**
 
-- MUST run relevant verification commands after non-trivial changes when scripts exist.
-- MUST report skipped commands, missing scripts, failures, and residual risk.
-- MUST rerun relevant checks after fixing Critical or Major self-review findings.
-- SHOULD add or update tests before relying on manual verification for deterministic password logic.
+- SHOULD read the linked reference when work touches TanStack Start, TanStack Router, Tailwind CSS, Playwright, Biome, Web Crypto, Clipboard, or Wrangler/Cloudflare Workers behavior.
+
+## Dev Commands
+
+See [dev-commands.md](./dev-commands.md) for the repository's npm scripts and when each command is useful.
+
+**Guidelines:**
+
+- SHOULD read the linked reference before running or modifying project commands, local servers, tests, builds, or deployment checks.
+
+## Verification
+
+See [verification.md](./verification.md) for the required verification matrix by changed surface and how to report skipped or blocked checks.
+
+**Guidelines:**
+
+- SHOULD read the linked reference before deciding which checks to run or reporting verification evidence.
 
 ## Topic-Specific Routing
 
@@ -85,13 +73,14 @@ The skills below own detailed rules for common project surfaces.
 
 | Topic | Skill |
 | ----- | ----- |
-| Project layout, stack, and file placement | [Project Structure](../project-structure/SKILL.md) |
+| Project layout, stack, deployment target, and file placement | [Project Structure](../project-structure/SKILL.md) |
 | TanStack Start routes and route files | [Routing Guidelines](../routing-guidelines/SKILL.md) |
 | React components and Tailwind implementation mechanics | [React Component Guidelines](../react-component-guidelines/SKILL.md) |
 | UI/UX design decisions | [UI Design Principles](../ui-design-principles/SKILL.md) |
 | Keyboard layout data | [Keyboard Layout Requirements](../keyboard-layout-requirements/SKILL.md) |
 | Password generation behavior | [Password Generation Requirements](../password-generation-requirements/SKILL.md) |
 | Security and privacy | [Application Security Requirements](../application-security-requirements/SKILL.md) |
+| Error handling, logging, and telemetry boundaries | [Observability Guidelines](../observability-guidelines/SKILL.md) |
 | Performance and reliability | [Performance and Reliability Requirements](../performance-and-reliability-requirements/SKILL.md) |
 | E2E tests | [E2E Testing Guidelines](../e2e-testing-guidelines/SKILL.md) |
 | Verification evidence | [Quality Assurance Guidelines](../quality-assurance-guidelines/SKILL.md) |
