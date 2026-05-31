@@ -6,13 +6,18 @@ export type CharacterCategory =
 
 export type KeyboardLayoutCharacters = Record<CharacterCategory, string>;
 
+interface KeyOutput {
+	direct: string;
+	shifted: string;
+}
+
 export interface KeyboardLayout {
 	id: string;
 	label: string;
 	family: string;
 	source: string;
 	notes: string;
-	characters: KeyboardLayoutCharacters;
+	keymap: readonly KeyOutput[];
 }
 
 export interface CharacterPoolOptions {
@@ -32,6 +37,12 @@ const LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
 const UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const DIGITS = "0123456789";
 const SYMBOLS = "`~!@#$%^&*()-_=+[]{}\\|;:'\",<.>/?";
+const CATEGORY_ORDER = [
+	"lowercase",
+	"uppercase",
+	"digits",
+	"symbols",
+] satisfies CharacterCategory[];
 
 const qwertyCharacters = {
 	lowercase: LOWERCASE,
@@ -40,73 +51,62 @@ const qwertyCharacters = {
 	symbols: SYMBOLS,
 } satisfies KeyboardLayoutCharacters;
 
+const QWERTY_KEYMAP = createKeymap(
+	["`1234567890-=", "qwertyuiop[]\\", "asdfghjkl;'", "zxcvbnm,./"],
+	["~!@#$%^&*()_+", "QWERTYUIOP{}|", 'ASDFGHJKL:"', "ZXCVBNM<>?"],
+);
+
 export const QWERTY_REFERENCE_LAYOUT = {
 	id: "qwerty-us",
 	label: "QWERTY / United States",
-	family: "QWERTY",
-	source: "Reference layout for QWERTY printable ASCII characters.",
+	family: "QWERTY / ANSI",
+	source: "Reference layout for QWERTY/US direct and shifted physical keys.",
 	notes:
 		"Used only as the reference set; it is not offered as a selectable target layout.",
-	characters: qwertyCharacters,
+	keymap: QWERTY_KEYMAP,
 } satisfies KeyboardLayout;
 
-const keybrEnglishLayoutCharacters = qwertyCharacters;
-
 const keybrSource =
-	"Listed on Keybr layouts page; modeled as English printable ASCII direct and shifted layers.";
+	"Listed on Keybr layouts page; modeled as ANSI direct and shifted physical key outputs.";
 
 const keybrNotes =
-	"Initial model excludes AltGr, dead keys, and composed output. Printable set is equivalent to QWERTY/US while key positions differ.";
+	"Initial model covers ANSI direct and shifted layers only. AltGr, dead keys, composed output, and matrix/ISO variants require separate physical-key review before being selectable.";
 
-const keybrLayoutDefinitions = [
-	["dvorak", "Dvorak", "Dvorak"],
-	["dvorak-programmer", "Dvorak Programmer", "Dvorak"],
-	["colemak", "Colemak", "Colemak"],
-	["colemak-dh", "Colemak-DH", "Colemak"],
-	["colemak-dh-wide", "Colemak-DH Wide", "Colemak"],
-	["colemak-dh-iso", "Colemak-DH ISO", "Colemak"],
-	["colemak-dh-wide-iso", "Colemak-DH Wide ISO", "Colemak"],
-	["colemak-dh-matrix", "Colemak-DH Matrix", "Colemak"],
-	["workman", "Workman", "Workman"],
-	["canary", "Canary", "Canary"],
-	["canary-matrix", "Canary Matrix", "Canary"],
-	["nerps", "Nerps", "Nerps"],
-	["nerps-matrix", "Nerps Matrix", "Nerps"],
-	["night-matrix", "Night Matrix", "Night"],
-	["hands-down-neu", "Hands Down Neu", "Hands Down"],
-	["hands-down-promethium", "Hands Down Promethium Matrix", "Hands Down"],
-	[
-		"hands-down-promethium-inverted",
-		"Hands Down Promethium Inverted Matrix",
-		"Hands Down",
-	],
-	["sturdy", "Sturdy", "Sturdy"],
-	["norman", "Norman", "Norman"],
-	["halmak", "Halmak", "Halmak"],
-	["engram", "Engram", "Engram"],
-	["gallium", "Gallium", "Gallium"],
-	["gallium-matrix", "Gallium Matrix", "Gallium"],
-	["graphite", "Graphite", "Graphite"],
-	["graphite-angle-kp", "Graphite Angle KP", "Graphite"],
-	["aptv3", "APTv3", "APTv3"],
-	["focal", "Focal", "Focal"],
-	["enthium-v6-matrix", "Enthium V6 Matrix", "Enthium"],
-	["enthium-v10-matrix", "Enthium V10 Matrix", "Enthium"],
-	["enthium-v11-matrix", "Enthium V11 Matrix", "Enthium"],
-	["kuntem", "Kuntem", "Kuntem"],
-] as const;
-
-export const KEYBOARD_LAYOUTS = keybrLayoutDefinitions.map(
-	([id, label, family]) =>
-		({
-			id,
-			label,
-			family,
-			source: keybrSource,
-			notes: keybrNotes,
-			characters: keybrEnglishLayoutCharacters,
-		}) satisfies KeyboardLayout,
-);
+export const KEYBOARD_LAYOUTS = [
+	{
+		id: "dvorak",
+		label: "Dvorak",
+		family: "Dvorak / ANSI",
+		source: keybrSource,
+		notes: keybrNotes,
+		keymap: createKeymap(
+			["`1234567890[]", "',.pyfgcrl/=\\", "aoeuidhtns-", ";qjkxbmwvz"],
+			["~!@#$%^&*(){}", '"<>PYFGCRL?+|', "AOEUIDHTNS_", ":QJKXBMWVZ"],
+		),
+	},
+	{
+		id: "colemak",
+		label: "Colemak",
+		family: "Colemak / ANSI",
+		source: keybrSource,
+		notes: keybrNotes,
+		keymap: createKeymap(
+			["`1234567890-=", "qwfpgjluy;[]\\", "arstdhneio'", "zxcvbkm,./"],
+			["~!@#$%^&*()_+", "QWFPGJLUY:{}|", 'ARSTDHNEIO"', "ZXCVBKM<>?"],
+		),
+	},
+	{
+		id: "workman",
+		label: "Workman",
+		family: "Workman / ANSI",
+		source: keybrSource,
+		notes: keybrNotes,
+		keymap: createKeymap(
+			["`1234567890-=", "qdrwbjfup;[]\\", "ashtgyneoi'", "zxmcvkl,./"],
+			["~!@#$%^&*()_+", "QDRWBJFUP:{}|", 'ASHTGYNEOI"', "ZXMCVKL<>?"],
+		),
+	},
+] satisfies KeyboardLayout[];
 
 export const DEFAULT_LAYOUT_ID = "colemak";
 
@@ -150,15 +150,11 @@ export function buildCharacterPool(
 		digits: 0,
 		symbols: 0,
 	} satisfies Record<CharacterCategory, number>;
-
+	const samePositionCharacters = buildSamePositionCharacters(layout);
 	const characters = categories
 		.map((category) => {
-			const intersection = intersectCharacters(
-				QWERTY_REFERENCE_LAYOUT.characters[category],
-				layout.characters[category],
-			);
-			counts[category] = intersection.length;
-			return intersection;
+			counts[category] = samePositionCharacters[category].length;
+			return samePositionCharacters[category];
 		})
 		.join("");
 
@@ -166,12 +162,9 @@ export function buildCharacterPool(
 		characters,
 		counts,
 		layout,
-		equivalentToQwerty: categories.every(
+		equivalentToQwerty: CATEGORY_ORDER.every(
 			(category) =>
-				intersectCharacters(
-					QWERTY_REFERENCE_LAYOUT.characters[category],
-					layout.characters[category],
-				) === QWERTY_REFERENCE_LAYOUT.characters[category],
+				samePositionCharacters[category] === qwertyCharacters[category],
 		),
 	};
 }
@@ -186,19 +179,97 @@ export function getAvailableCategoryCount(
 		return 0;
 	}
 
-	return intersectCharacters(
-		QWERTY_REFERENCE_LAYOUT.characters[category],
-		layout.characters[category],
-	).length;
+	return buildSamePositionCharacters(layout)[category].length;
 }
 
-export function intersectCharacters(
-	reference: string,
-	candidate: string,
-): string {
-	const candidateCharacters = new Set(candidate);
+function buildSamePositionCharacters(
+	layout: KeyboardLayout,
+): KeyboardLayoutCharacters {
+	const characters = {
+		lowercase: "",
+		uppercase: "",
+		digits: "",
+		symbols: "",
+	} satisfies KeyboardLayoutCharacters;
 
-	return Array.from(reference)
-		.filter((character) => candidateCharacters.has(character))
-		.join("");
+	for (
+		let index = 0;
+		index < QWERTY_REFERENCE_LAYOUT.keymap.length;
+		index += 1
+	) {
+		const referenceKey = QWERTY_REFERENCE_LAYOUT.keymap[index];
+		const layoutKey = layout.keymap[index];
+
+		if (!referenceKey || !layoutKey) {
+			continue;
+		}
+
+		addSameOutput(characters, referenceKey.direct, layoutKey.direct);
+		addSameOutput(characters, referenceKey.shifted, layoutKey.shifted);
+	}
+
+	return characters;
+}
+
+function addSameOutput(
+	characters: KeyboardLayoutCharacters,
+	referenceOutput: string,
+	layoutOutput: string,
+): void {
+	if (referenceOutput !== layoutOutput) {
+		return;
+	}
+
+	const category = getCharacterCategory(referenceOutput);
+
+	if (!category) {
+		return;
+	}
+
+	characters[category] += referenceOutput;
+}
+
+function getCharacterCategory(
+	character: string,
+): CharacterCategory | undefined {
+	if (LOWERCASE.includes(character)) {
+		return "lowercase";
+	}
+
+	if (UPPERCASE.includes(character)) {
+		return "uppercase";
+	}
+
+	if (DIGITS.includes(character)) {
+		return "digits";
+	}
+
+	if (SYMBOLS.includes(character)) {
+		return "symbols";
+	}
+}
+
+function createKeymap(
+	directRows: readonly string[],
+	shiftedRows: readonly string[],
+): readonly KeyOutput[] {
+	return directRows.flatMap((directRow, rowIndex) => {
+		const shiftedRow = shiftedRows[rowIndex];
+
+		if (shiftedRow === undefined) {
+			throw new Error("Keyboard layout is missing a shifted row.");
+		}
+
+		const directCharacters = Array.from(directRow);
+		const shiftedCharacters = Array.from(shiftedRow);
+
+		if (directCharacters.length !== shiftedCharacters.length) {
+			throw new Error("Keyboard layout row lengths must match.");
+		}
+
+		return directCharacters.map((direct, index) => ({
+			direct,
+			shifted: shiftedCharacters[index] ?? "",
+		}));
+	});
 }

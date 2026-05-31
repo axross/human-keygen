@@ -58,7 +58,7 @@ The app should remain small, local-first, and testable. Password-generation rule
 - MUST avoid adding server dependencies or runtime services unless the product requirement needs them.
 - MUST justify every new npm dependency by product value, maintenance health, and bundle impact.
 - MUST NOT hand-edit generated files such as `src/routeTree.gen.ts` unless official tooling requires it.
-- SHOULD prefer small pure functions with focused tests for generation, layout intersection, and entropy logic.
+- SHOULD prefer small pure functions with focused tests for generation, same-position layout pools, and entropy logic.
 
 ## Verification Commands
 

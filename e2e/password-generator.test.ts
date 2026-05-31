@@ -1,7 +1,35 @@
 import { expect, test } from "@playwright/test";
 
 const COPY_STATUS_PATTERN = /Copied|Clipboard unavailable/;
+const COLEMAK_POOL =
+	"qwahzxcvbmQWAHZXCVBM1234567890`~!@#$%^&*()-_=+[{]}\\|'\",<.>/?";
+const DISALLOWED_COLEMAK_LETTERS = /[defgijklnoprstuyDEFGIJKLNOPRSTUY]/;
+const WORD_BOUNDARY_PATTERN = /[a-z][A-Z]/;
 const REQUESTED_PASSWORD_LENGTH = 20;
+
+test("limits Colemak output to same-position QWERTY keys", async ({ page }) => {
+	await page.goto("/");
+
+	const generateButton = page.getByRole("button", { name: "Generate" });
+	await expect(generateButton).toBeEnabled();
+
+	const pool =
+		(await page.getByTestId("character-pool").getAttribute("data-pool")) ?? "";
+	expect(pool).toBe(COLEMAK_POOL);
+	expect(pool).not.toMatch(DISALLOWED_COLEMAK_LETTERS);
+
+	await generateButton.click();
+
+	const generatedPassword = page.getByTestId("generated-password");
+	const password = (await generatedPassword.textContent()) ?? "";
+
+	expect(password).toHaveLength(16);
+	expect(
+		Array.from(password).every((character) => pool.includes(character)),
+	).toBe(true);
+	expect(password).toMatch(WORD_BOUNDARY_PATTERN);
+	expect(password).not.toMatch(DISALLOWED_COLEMAK_LETTERS);
+});
 
 test("generates a layout-aware password and copy feedback", async ({
 	page,
@@ -36,6 +64,7 @@ test("generates a layout-aware password and copy feedback", async ({
 	expect(
 		Array.from(password).every((character) => pool.includes(character)),
 	).toBe(true);
+	expect(password).toMatch(WORD_BOUNDARY_PATTERN);
 
 	await page.getByRole("button", { name: "Copy" }).click();
 	await expect(page.getByTestId("copy-status")).toContainText(

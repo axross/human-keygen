@@ -8,7 +8,7 @@ import {
 	getAvailableCategoryCount,
 	KEYBOARD_LAYOUTS,
 } from "@/lib/keyboard-layouts/layouts";
-import { estimateCompleteWordEntropyBits } from "@/lib/password/entropy";
+import { estimatePasswordEntropyBits } from "@/lib/password/entropy";
 import {
 	DEFAULT_PASSWORD_LENGTH,
 	generateMemorablePassword,
@@ -38,7 +38,7 @@ export function PasswordGenerator(): JSX.Element {
 		[layoutId, options],
 	);
 	const entropy = pool
-		? estimateCompleteWordEntropyBits(length, pool.characters)
+		? estimatePasswordEntropyBits(length, pool.characters)
 		: 0;
 	const canGenerate = isHydrated && Boolean(pool && pool.characters.length > 0);
 
@@ -121,8 +121,8 @@ export function PasswordGenerator(): JSX.Element {
 						</h1>
 					</div>
 					<p className="max-w-xl text-[var(--neutral-10)] text-sm leading-7">
-						Local-only memorable strings using characters shared by QWERTY and
-						your selected layout.
+						Local-only memorable strings using same-position keys shared by
+						QWERTY and your selected layout.
 					</p>
 				</header>
 
@@ -373,7 +373,10 @@ function PasswordResult({
 					label="Pool size"
 					value={String(pool?.characters.length ?? 0)}
 				/>
-				<Metric label="Phrase entropy" value={`${entropy.toFixed(1)} bits`} />
+				<Metric
+					label="Estimated entropy"
+					value={`${entropy.toFixed(1)} bits`}
+				/>
 				<Metric label="Length" testId="length-value" value={String(length)} />
 			</dl>
 
@@ -383,8 +386,8 @@ function PasswordResult({
 				</h2>
 				<p className="text-[var(--neutral-10)] text-sm">
 					{pool?.equivalentToQwerty
-						? "This English layout has an equivalent printable set; the practical difference is key position."
-						: "Only characters found in both QWERTY and the selected layout are used."}
+						? "Every modeled key position matches QWERTY for the selected options."
+						: "Only characters with the same physical key position in QWERTY and the selected layout are used."}
 				</p>
 				<code
 					className="block break-all rounded-[var(--radius-sm)] border border-[var(--neutral-5)] bg-[var(--neutral-0)] px-3 py-2 font-mono text-[var(--neutral-11)] text-sm"
