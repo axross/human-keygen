@@ -27,7 +27,7 @@ References:
 ## Goals
 
 - Provide a one-screen password generator that is usable immediately, without a marketing landing page.
-- Let users choose a keyboard layout and generate passwords from the literal character intersection between QWERTY and that layout.
+- Let users choose a keyboard layout and generate passwords from the same-position character pool shared by QWERTY and that layout.
 - Start with popular non-QWERTY English layouts listed by Keybr, excluding QWERTY / United States.
 - Make generation rules visible enough that users understand why certain characters are included or excluded.
 - Generate passwords locally in the browser with Web Crypto randomness.
@@ -58,12 +58,12 @@ The primary user has a non-QWERTY layout and wants a password that is both stron
 ### Keyboard Layouts
 
 - The app MUST define QWERTY as the reference layout.
-- Each non-QWERTY layout MUST provide a canonical set of printable literal characters available without composed output.
-- The password character pool MUST be the intersection of QWERTY printable characters and the selected layout's printable characters.
+- Each non-QWERTY layout MUST provide canonical direct and shifted physical-key output data available without composed output.
+- The password character pool MUST include only characters whose QWERTY output and selected-layout output are identical on the same physical key and same layer.
 - The initial version MUST include at least Colemak, Dvorak, and Workman.
-- The initial version SHOULD include the popular non-QWERTY English layouts visible on the Keybr layouts page when their printable character set can be modeled safely.
-- The initial version MUST include lowercase letters, uppercase letters, digits, and shifted symbols when they exist in both QWERTY and the selected layout.
-- Layout data MUST expose enough metadata for UI display, tests, and future review: stable `id`, label, locale or family, supported character set, source notes, and category breakdown.
+- The initial version SHOULD include the popular non-QWERTY English layouts visible on the Keybr layouts page when their physical key outputs can be modeled safely.
+- The initial version MUST include lowercase letters, uppercase letters, digits, and shifted symbols when they match in both QWERTY and the selected layout at the same physical key position.
+- Layout data MUST expose enough metadata for UI display, tests, and future review: stable `id`, label, locale or family, physical keymap, source notes, and category breakdown.
 - The app MUST prevent generation when the selected options produce an empty pool.
 - The app SHOULD ship with a small reviewed starter set of layouts, then add more layouts behind tests.
 
@@ -75,12 +75,14 @@ The primary user has a non-QWERTY layout and wants a password that is both stron
 - Length MUST default to 16 characters.
 - Length MUST be configurable from 8 to 128 characters.
 - Digits, letters, uppercase letters, and symbols SHOULD be toggleable only when the selected layout pool supports them.
-- The UI MUST show an entropy estimate based on exact-length complete-word phrase combinations and label it as an estimate, not a guarantee of real-world crack resistance.
+- The UI MUST show an entropy estimate and label it as an estimate, not a guarantee of real-world crack resistance.
 - The entropy estimate MAY omit additional case and substitution entropy if the displayed value is treated as conservative.
 - The first implementation SHOULD generate memorable passphrase-like grouped strings from short word fragments.
-- The base passphrase MUST be composed from complete words whose lengths add up exactly to the configured password length.
+- Current selectable layouts MUST have enough typeable complete-word candidates to compose every supported length from 8 to 128 characters.
+- When enough typeable word candidates exist, the base passphrase MUST be composed from complete words whose lengths add up exactly to the configured password length.
+- When no complete-word sequence can fit the restricted character pool, generation MUST fall back to unbiased random character selection from the same final pool.
 - The generator MUST NOT truncate a word or append filler characters to satisfy length.
-- The initial English word candidates SHOULD come from the MIT-licensed `wordlist-js` SCOWL-based common-English lists, filtered to lowercase ASCII words that can be typed from the computed pool.
+- The initial English word candidates SHOULD come from the MIT-licensed `wordlist-js` SCOWL-based common-English lists, filtered to lowercase ASCII words that can be typed from the computed pool; lower-frequency `wordlist-js` supplements MAY be included when a strict same-position pool cannot form memorable phrases from the primary list alone.
 - The generator MAY use gamer-username-like substitutions such as `4` for `A`, `5` for `S`, `!` for `I`, or `8` for `eight` / `ate` when those replacement characters are allowed by the computed pool.
 - Tests MUST be able to inject deterministic randomness without weakening production randomness.
 
@@ -162,11 +164,11 @@ Because TanStack Start is currently RC, dependency versions SHOULD be pinned or 
 - The home route renders the generator as the primary screen.
 - Selecting each shipped layout changes the available character pool and entropy estimate.
 - For alternative English layouts with the same printable character set, the UI explains that the pool remains equivalent while physical key positions differ.
-- Generated passwords never contain characters outside the computed intersection.
+- Generated passwords never contain characters outside the computed same-position pool.
 - Generated passwords are built from complete word candidates; no word is cut short to hit the requested length.
 - Empty or incompatible option combinations produce a clear disabled/error state rather than a broken password.
 - Copy action works through the Clipboard API and shows success/failure feedback.
-- Unit tests cover layout intersection, entropy calculation, and random index selection.
+- Unit tests cover same-position layout pools, entropy calculation, and random index selection.
 - E2E tests cover layout selection, generation, option changes, and copy feedback.
 - Browser verification confirms responsive layout and focus behavior on mobile and desktop viewports.
 

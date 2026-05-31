@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
 	estimateCompleteWordEntropyBits,
 	estimateEntropyBits,
+	estimatePasswordEntropyBits,
 } from "./entropy";
 
 describe("estimateEntropyBits", () => {
@@ -29,5 +30,31 @@ describe("estimateCompleteWordEntropyBits", () => {
 
 	it("returns zero when no complete word sequence can fit", () => {
 		expect(estimateCompleteWordEntropyBits(8, "xyz")).toBe(0);
+	});
+});
+
+describe("estimatePasswordEntropyBits", () => {
+	it("uses complete-word entropy for restricted pools with word coverage", () => {
+		const restrictedPool =
+			"qwahzxcvbmQWAHZXCVBM1234567890`~!@#$%^&*()-_=+[{]}\\|'\",<.>/?";
+		const completeWordEntropy = estimateCompleteWordEntropyBits(
+			16,
+			restrictedPool,
+		);
+
+		expect(completeWordEntropy).toBeGreaterThan(0);
+		expect(estimatePasswordEntropyBits(16, restrictedPool)).toBe(
+			completeWordEntropy,
+		);
+	});
+
+	it("falls back to character entropy when complete words cannot fit", () => {
+		const wordlessPool = "xyzXYZ012345";
+
+		expect(estimateCompleteWordEntropyBits(16, wordlessPool)).toBe(0);
+		expect(estimatePasswordEntropyBits(16, wordlessPool)).toBeCloseTo(
+			estimateEntropyBits(wordlessPool.length, 16),
+			2,
+		);
 	});
 });

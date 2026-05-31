@@ -12,6 +12,11 @@ describe("keyboard layouts", () => {
 		expect(getLayoutById("colemak")?.label).toBe("Colemak");
 		expect(getLayoutById("dvorak")?.label).toBe("Dvorak");
 		expect(getLayoutById("workman")?.label).toBe("Workman");
+		expect(KEYBOARD_LAYOUTS.map((layout) => layout.id)).toEqual([
+			"dvorak",
+			"colemak",
+			"workman",
+		]);
 	});
 
 	it("keeps QWERTY as a reference layout, not a selectable layout", () => {
@@ -25,18 +30,41 @@ describe("keyboard layouts", () => {
 		);
 	});
 
-	it("builds a deterministic QWERTY intersection with uppercase and shifted symbols", () => {
+	it("builds the Colemak pool from same-position QWERTY keys", () => {
 		const pool = buildCharacterPool("colemak", {
 			includeUppercase: true,
 			includeDigits: true,
 			includeSymbols: true,
 		});
 
-		expect(pool?.characters).toContain("A");
-		expect(pool?.characters).toContain("4");
-		expect(pool?.characters).toContain("!");
-		expect(pool?.counts.uppercase).toBe(26);
-		expect(pool?.counts.symbols).toBeGreaterThan(20);
+		expect(pool?.characters).toBe(
+			"qwahzxcvbmQWAHZXCVBM1234567890`~!@#$%^&*()-_=+[{]}\\|'\",<.>/?",
+		);
+		expect(pool?.characters).not.toContain("e");
+		expect(pool?.characters).not.toContain("E");
+		expect(pool?.counts.lowercase).toBe(10);
+		expect(pool?.counts.uppercase).toBe(10);
+		expect(pool?.counts.digits).toBe(10);
+		expect(pool?.counts.symbols).toBe(30);
+	});
+
+	it("builds distinct pools for Dvorak and Workman key positions", () => {
+		const dvorak = buildCharacterPool("dvorak", {
+			includeUppercase: true,
+			includeDigits: true,
+			includeSymbols: true,
+		});
+		const workman = buildCharacterPool("workman", {
+			includeUppercase: true,
+			includeDigits: true,
+			includeSymbols: true,
+		});
+
+		expect(dvorak?.characters).toBe("amAM1234567890`~!@#$%^&*()\\|");
+		expect(workman?.characters).toBe(
+			"qasgzxQASGZX1234567890`~!@#$%^&*()-_=+[{]}\\|'\",<.>/?",
+		);
+		expect(dvorak?.characters).not.toBe(workman?.characters);
 	});
 
 	it("reports unavailable counts for unknown layouts", () => {

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildCharacterPool } from "@/lib/keyboard-layouts/layouts";
 import {
+	buildCharacterPool,
+	KEYBOARD_LAYOUTS,
+} from "@/lib/keyboard-layouts/layouts";
+import {
+	canSelectCompleteWords,
 	DEFAULT_PASSWORD_LENGTH,
 	generateMemorablePassword,
 	MAX_PASSWORD_LENGTH,
@@ -9,6 +13,8 @@ import {
 } from "./generate-password";
 import type { RandomSource } from "./random-source";
 import { PASSWORD_WORD_CANDIDATES } from "./word-candidates";
+
+const DISALLOWED_COLEMAK_LETTERS = /[defgijklnoprstuyDEFGIJKLNOPRSTUY]/;
 
 function createSequenceSource(seed = 0): RandomSource {
 	let value = seed;
@@ -25,13 +31,16 @@ function createSequenceSource(seed = 0): RandomSource {
 
 describe("generateMemorablePassword", () => {
 	it("generates the requested default length from the computed pool", () => {
-		const pool = buildCharacterPool("workman", {
+		const pool = buildCharacterPool("colemak", {
 			includeUppercase: true,
 			includeDigits: true,
 			includeSymbols: true,
 		});
 
 		expect(pool).toBeDefined();
+		expect(
+			canSelectCompleteWords(DEFAULT_PASSWORD_LENGTH, pool?.characters ?? ""),
+		).toBe(true);
 
 		const password = generateMemorablePassword({
 			length: DEFAULT_PASSWORD_LENGTH,
@@ -45,6 +54,72 @@ describe("generateMemorablePassword", () => {
 				pool?.characters.includes(character),
 			),
 		).toBe(true);
+	});
+
+	it("composes Colemak same-position output from complete words", () => {
+		const pool = buildCharacterPool("colemak", {
+			includeUppercase: true,
+			includeDigits: true,
+			includeSymbols: true,
+		});
+		const candidateValues = new Set(
+			PASSWORD_WORD_CANDIDATES.map((candidate) => candidate.value),
+		);
+
+		expect(pool).toBeDefined();
+		expect(
+			canSelectCompleteWords(DEFAULT_PASSWORD_LENGTH, pool?.characters ?? ""),
+		).toBe(true);
+
+		const words = selectCompleteWords({
+			length: DEFAULT_PASSWORD_LENGTH,
+			pool: pool?.characters ?? "",
+			randomSource: createSequenceSource(7),
+		});
+
+		const password = generateMemorablePassword({
+			length: DEFAULT_PASSWORD_LENGTH,
+			pool: pool?.characters ?? "",
+			randomSource: createSequenceSource(7),
+		});
+
+		expect(password).toHaveLength(DEFAULT_PASSWORD_LENGTH);
+		expect(words.join("")).toHaveLength(DEFAULT_PASSWORD_LENGTH);
+		expect(words.every((word) => candidateValues.has(word))).toBe(true);
+		expect(
+			words.every((word) =>
+				Array.from(word).every((character) =>
+					pool?.characters.includes(character),
+				),
+			),
+		).toBe(true);
+		expect(
+			Array.from(password).every((character) =>
+				pool?.characters.includes(character),
+			),
+		).toBe(true);
+		expect(password).not.toMatch(DISALLOWED_COLEMAK_LETTERS);
+	});
+
+	it("keeps every selectable layout on complete-word generation for every supported length", () => {
+		for (const layout of KEYBOARD_LAYOUTS) {
+			const pool = buildCharacterPool(layout.id, {
+				includeUppercase: true,
+				includeDigits: true,
+				includeSymbols: true,
+			});
+
+			expect(pool).toBeDefined();
+
+			for (const length of Array.from(
+				{ length: MAX_PASSWORD_LENGTH - MIN_PASSWORD_LENGTH + 1 },
+				(_, index) => MIN_PASSWORD_LENGTH + index,
+			)) {
+				expect(canSelectCompleteWords(length, pool?.characters ?? "")).toBe(
+					true,
+				);
+			}
+		}
 	});
 
 	it("supports the configured length boundaries", () => {
@@ -70,11 +145,7 @@ describe("generateMemorablePassword", () => {
 	});
 
 	it("composes every supported length from complete words", () => {
-		const pool = buildCharacterPool("colemak", {
-			includeUppercase: true,
-			includeDigits: true,
-			includeSymbols: true,
-		});
+		const pool = "abcdefghijklmnopqrstuvwxyz";
 		const candidateValues = new Set(
 			PASSWORD_WORD_CANDIDATES.map((candidate) => candidate.value),
 		);
@@ -85,7 +156,7 @@ describe("generateMemorablePassword", () => {
 		)) {
 			const words = selectCompleteWords({
 				length,
-				pool: pool?.characters ?? "",
+				pool,
 				randomSource: createSequenceSource(length),
 			});
 
@@ -94,16 +165,12 @@ describe("generateMemorablePassword", () => {
 		}
 	});
 
-	it("keeps supported uppercase, digit, and symbol variety in the final output", () => {
-		const pool = buildCharacterPool("dvorak", {
-			includeUppercase: true,
-			includeDigits: true,
-			includeSymbols: true,
-		});
-
+	it("keeps supported uppercase, digit, and symbol variety for complete-word output", () => {
+		const pool =
+			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!$";
 		const password = generateMemorablePassword({
 			length: DEFAULT_PASSWORD_LENGTH,
-			pool: pool?.characters ?? "",
+			pool,
 			randomSource: createSequenceSource(),
 		});
 

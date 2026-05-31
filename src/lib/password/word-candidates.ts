@@ -1,4 +1,4 @@
-// Generated from wordlist-js@2.0.0 english10. Run npm run update-word-candidates.
+// Generated from wordlist-js@2.0.0 english10, with curated wordlist-js englishAll supplements for restricted keyboard pools. Run npm run update-word-candidates.
 
 export interface WordCandidate {
 	length: number;
@@ -3437,6 +3437,35 @@ const PASSWORD_WORD_VALUES = [
 	"yours",
 	"yourself",
 	"zero",
+	"aah",
+	"aha",
+	"baa",
+	"bah",
+	"cab",
+	"cam",
+	"caw",
+	"gag",
+	"gaga",
+	"gags",
+	"ham",
+	"haw",
+	"hmm",
+	"mac",
+	"macaw",
+	"mam",
+	"mama",
+	"mamma",
+	"mamba",
+	"maw",
+	"sag",
+	"saga",
+	"sagas",
+	"sags",
+	"sass",
+	"sax",
+	"vac",
+	"wax",
+	"wham",
 ];
 
 export const PASSWORD_WORD_CANDIDATES = PASSWORD_WORD_VALUES.map(

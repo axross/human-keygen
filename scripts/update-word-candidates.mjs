@@ -5,28 +5,77 @@ const SOURCE_PACKAGE = "wordlist-js";
 const SOURCE_VERSION = "2.0.0";
 const SOURCE_LIST = "english10";
 const MIN_WORD_LENGTH = 3;
+const MIN_SUPPLEMENTAL_WORD_LENGTH = 3;
 const MAX_WORD_LENGTH = 9;
 const LOWERCASE_WORD_PATTERN = /^[a-z]+$/;
+const SUPPLEMENTAL_WORD_VALUES = [
+	"aah",
+	"aha",
+	"baa",
+	"bah",
+	"cab",
+	"cam",
+	"caw",
+	"gag",
+	"gaga",
+	"gags",
+	"gas",
+	"ham",
+	"haw",
+	"hmm",
+	"mac",
+	"macaw",
+	"mam",
+	"mama",
+	"mamma",
+	"mamba",
+	"maw",
+	"sag",
+	"saga",
+	"sagas",
+	"sags",
+	"sass",
+	"sax",
+	"vac",
+	"wax",
+	"wham",
+];
 const require = createRequire(import.meta.url);
-const { [SOURCE_LIST]: sourceWords } = require(
+const { englishAll, [SOURCE_LIST]: sourceWords } = require(
 	`${SOURCE_PACKAGE}/dist/english`,
 );
 
+const invalidSupplementalWords = SUPPLEMENTAL_WORD_VALUES.filter(
+	(word) =>
+		!englishAll.includes(word) ||
+		word.length < MIN_SUPPLEMENTAL_WORD_LENGTH ||
+		word.length > MAX_WORD_LENGTH ||
+		!LOWERCASE_WORD_PATTERN.test(word),
+);
+
+if (invalidSupplementalWords.length > 0) {
+	throw new Error(
+		`Invalid supplemental word candidates: ${invalidSupplementalWords.join(", ")}`,
+	);
+}
+
 const wordValues = Array.from(
 	new Set(
-		sourceWords.filter(
-			(word) =>
-				word.length >= MIN_WORD_LENGTH &&
-				word.length <= MAX_WORD_LENGTH &&
-				LOWERCASE_WORD_PATTERN.test(word),
-		),
+		sourceWords
+			.filter(
+				(word) =>
+					word.length >= MIN_WORD_LENGTH &&
+					word.length <= MAX_WORD_LENGTH &&
+					LOWERCASE_WORD_PATTERN.test(word),
+			)
+			.concat(SUPPLEMENTAL_WORD_VALUES),
 	),
 );
 const serializedWordValues = `[\n${wordValues
 	.map((word) => `\t${JSON.stringify(word)},`)
 	.join("\n")}\n]`;
 
-const fileContents = `// Generated from ${SOURCE_PACKAGE}@${SOURCE_VERSION} ${SOURCE_LIST}. Run npm run update-word-candidates.
+const fileContents = `// Generated from ${SOURCE_PACKAGE}@${SOURCE_VERSION} ${SOURCE_LIST}, with curated ${SOURCE_PACKAGE} englishAll supplements for restricted keyboard pools. Run npm run update-word-candidates.
 
 export interface WordCandidate {
 \tlength: number;

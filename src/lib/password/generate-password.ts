@@ -56,6 +56,10 @@ export function generateMemorablePassword({
 }: GeneratePasswordInput): string {
 	validatePasswordInput(length, pool);
 
+	if (!canSelectCompleteWords(length, pool)) {
+		return generateRandomPassword({ length, pool, randomSource });
+	}
+
 	const poolSet = new Set(pool);
 	const characters = selectCompleteWords({
 		length,
@@ -76,6 +80,17 @@ export function generateMemorablePassword({
 	applyOptionalSubstitutions(transformContext);
 
 	return characters.join("");
+}
+
+export function canSelectCompleteWords(length: number, pool: string): boolean {
+	validatePasswordInput(length, pool);
+
+	const candidatesByLength = groupWordCandidatesByLength(
+		getTypeableWordCandidates(pool),
+	);
+	const sequenceCounts = countCompleteWordSequences(length, candidatesByLength);
+
+	return (sequenceCounts[length] ?? 0n) > 0n;
 }
 
 export function selectCompleteWords({
@@ -112,6 +127,16 @@ export function selectCompleteWords({
 	}
 
 	return words;
+}
+
+function generateRandomPassword({
+	length,
+	pool,
+	randomSource,
+}: GeneratePasswordInput): string {
+	return Array.from({ length }, () =>
+		pool.charAt(getRandomIndex(pool.length, randomSource)),
+	).join("");
 }
 
 function selectNextCompleteWord(

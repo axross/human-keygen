@@ -26,7 +26,7 @@ Different changes need different tests.
 | Surface | Expected verification |
 | ------- | --------------------- |
 | Password generation | Unit tests for pool, randomness mapping, length, entropy |
-| Keyboard layouts | Unit tests for layout normalization and QWERTY intersection |
+| Keyboard layouts | Unit tests for layout normalization and same-position QWERTY pools |
 | UI components | Unit or e2e coverage plus manual responsive/focus checks |
 | Routes/config | Build plus browser smoke test |
 | Skills/docs | Format or link checks when available, plus manual link review |

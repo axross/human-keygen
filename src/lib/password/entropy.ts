@@ -32,6 +32,19 @@ export function estimateCompleteWordEntropyBits(
 	return log2BigInt(sequenceCount);
 }
 
+export function estimatePasswordEntropyBits(
+	length: number,
+	pool: string,
+): number {
+	const completeWordEntropy = estimateCompleteWordEntropyBits(length, pool);
+
+	if (completeWordEntropy > 0) {
+		return completeWordEntropy;
+	}
+
+	return estimateEntropyBits(pool.length, length);
+}
+
 function log2BigInt(value: bigint): number {
 	if (value <= 0n) {
 		return 0;
